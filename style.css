@@ -38,13 +38,13 @@ p
 	float : left;
 	width: 20% ;
 
-	-webkit - border - radius : 10px;
-	-moz - border - radius : 10px;
-	border - radius : 10px;
+	-webkit-border-radius : 10px;
+	-moz-border-radius : 10px;
+	border-radius : 10px;
 	/*background-color:#E3A20B;*/
-	-webkit - box - shadow : #B3B3B3 10px 10px 10px;
-	-moz - box - shadow : #B3B3B3 10px 10px 10px;
-	box - shadow : #B3B3B3 10px 10px 10px;
+	-webkit-box-shadow : #B3B3B3 10px 10px 10px;
+	-moz-box-shadow : #B3B3B3 10px 10px 10px;
+	box-shadow : #B3B3B3 10px 10px 10px;
 
 	/*height: 100%;*/
 }
