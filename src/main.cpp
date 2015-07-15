@@ -102,14 +102,14 @@ void copyFile(string src, string dest)
 	in.open(src.c_str(), ios::in);
 	if (!in)
 	{
-		cout << "Can't open file!" << endl;
+		cout << "Can't open input file: " << src << endl;
 		return;
 	}
 
 	out.open(dest.c_str(), ios::out);
 	if (!in)
 	{
-		cout << "Can't open file!" << endl;
+		cout << "Can't open output file: " << dest  << endl;
 		in.close();
 		return;
 	}
@@ -209,7 +209,13 @@ int main(int argc, char* argv[])
 	}
 
 	cout << "Copying JS files" << endl;
+	
+#ifndef RESOURCE_DIR
 	string execPath = getPath(argv[0]);
+#else
+	string execPath = RESOURCE_DIR;
+#endif
+	
 	copyFile(execPath + "style.css",
 			 s.outputDirectory + SEPERATOR + "style.css");
 	
