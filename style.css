@@ -61,9 +61,9 @@ pre::before
 	font-size : 1.0em;
 
 	margin:	1em;
-	margin-right : 12% ;
+	/*margin-right : 12% ;*/
 	padding: 1em;
-	width: 99% ;
+	width: 96% ;
 
 	-webkit-border-radius : 10px;
 	-moz-border-radius : 10px;
@@ -129,6 +129,6 @@ body
 	/*color: #343538;*/
 	background: #868792;
 	font: 1em/1.25 sans;
-	margin-left: 12%;
-	margin-right: 12%;
+	/*margin-left: 12%;
+	margin-right: 12%;*/
 }
