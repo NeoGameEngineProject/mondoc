@@ -178,8 +178,10 @@ string HTMLGenerator::generateFunction(LuaSource::Element& e)
 	replaceString(e.content, "\n", "<br>");
 	ss << "<h2>" << e.title << "</h2>" << endl << "<p>" << e.content << endl;
 
+	ss << "<p class='arguments'>" << endl;
 	for(LuaSource::Parameter p : e.parameters)
 		ss << "<strong>" << p.name << ":</strong> " << p.description << "<br>" << endl;
+	ss << "</p>" << endl;
 
 	if(!e.ret.empty())
 		ss << "<br><strong>Returns: </strong>" << e.ret << endl;

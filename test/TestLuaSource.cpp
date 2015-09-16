@@ -174,7 +174,9 @@ TEST(HTMLGenerator, FunctionTest)
 	string output = gen.generateFunction((*src.getElements())[0]);
 	string expected = "<h2>A function!</h2>\n"
 			"<p>Description<br>\n"
+			"<p class='arguments'>\n"
 			"<strong>p:</strong> Parameter!<br>\n"
+			"</p>\n"
 			"<br><strong>Returns: </strong>Value!\n"
 			"</p>\n\n";
 
@@ -319,7 +321,6 @@ TEST(HTMLGenerator, CompressTest)
 TEST(HTMLGenerator, MoreCompressTest)
 {
 	LuaSource src;
-	HTMLGenerator gen;
 
 	src.parseString("--- test.lua - This is a test for mondoc!\n"
 					"-- Some more test stuff\n"

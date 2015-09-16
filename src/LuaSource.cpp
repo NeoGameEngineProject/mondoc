@@ -271,6 +271,13 @@ void LuaSource::compress(std::function<std::string(Element&)> generateCodeblock)
 			handlingFunction = true;
 			continue;
 		}
+		else if(handlingFunction && e.type == LuaSource::ELEMENT_FUNCTION)
+		{
+			newElements.push_back(currentFunction);
+
+			currentFunction = e;
+			continue;
+		}
 
 		newElements.push_back(e);
 	}
