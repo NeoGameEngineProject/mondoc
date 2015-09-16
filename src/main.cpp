@@ -5,9 +5,10 @@
 #include <fstream>
 #include <algorithm>
 
+#include "HTMLGenerator.h"
 #include "LuaSource.h"
 
-#define VERSION_STRING "0.2"
+#define VERSION_STRING "0.3"
 
 #ifndef WIN32
 #define SEPERATOR "/"
@@ -74,15 +75,6 @@ void displayHelp()
 	cout << "\"Der Mond, das blasse Auge der Nacht.\" - Heinrich Heine" << endl; 
 }
 
-string getFilename(string filename)
-{
-	int idx = filename.find_last_of(SEPERATOR);
-	if (idx != -1)
-		return filename.substr(idx + 1);
-
-	return filename;
-}
-
 string getPath(string filename)
 {
 	int idx = filename.find_last_of(SEPERATOR);
@@ -94,113 +86,10 @@ string getPath(string filename)
 	return filename;
 }
 
-void copyFile(string src, string dest)
-{
-	ifstream in;
-	ofstream out;
-
-	in.open(src.c_str(), ios::in);
-	if (!in)
-	{
-		cout << "Can't open input file: " << src << endl;
-		return;
-	}
-
-	out.open(dest.c_str(), ios::out);
-	if (!in)
-	{
-		cout << "Can't open output file: " << dest  << endl;
-		in.close();
-		return;
-	}
-
-	out << in.rdbuf();
-	in.close();
-	out.close();
-}
-
-void writeHtml(string luaFilename, string outputDirectory, int idx, Settings& s, ofstream& searchOut, string outputFilename = "")
-{
-
-	string filename;
-	string title;
-
-	if(outputFilename.empty())
-		title = getFilename(luaFilename);
-	else
-		title = outputFilename;
-	
-	ofstream out;
-	out.open((outputDirectory + SEPERATOR + title + ".html").c_str(), ios::out);
-	if (!out)
-	{
-		cout << "Could not write file!" << endl;
-		return;
-	}
-
-	out << "<head>" << endl;
-	out << "<title> Reference | " << title << "</title>" << endl;
-	out << "</head>" << endl;
-
-	// Start writing html stuff
-	out << "<html>" << endl;
-	out << "<script src=\"lunr.js\"></script>" << endl;
-	out << "<script src=\"searchprovider.js\"></script>" << endl;
-	out << "<script src=\"searchindex.js\"></script>" << endl;
-	out << "<script src=\"highlight.pack.js\"></script>" << endl;
-	out << "<script>hljs.initHighlightingOnLoad();</script>" << endl;
-
-	out << "<body onload='processOnLoadSearch();'>" << endl;
-	out << "<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\"/>"
-		<< endl;
-
-	out << "<link rel=\"stylesheet\" type=\"text/css\" "
-		   "href=\"syntax-style.css\"/>" << endl;
-
-	out << "<div class='function' id='searchresults'></div>" << endl;
-	out << "<div class='sidepanel'>" << endl;
-
-	// Write search field
-	out << "<form>" << endl;
-	out << "<input type=\"text\" name=\"searchedit\" "
-		   "placeholder=\"Search...\">" << endl;
-	out << "<input type=\"button\" name=\"\" value=\"Search\"";
-	out << " onclick=\"submitSearch(this.form.searchedit.value); return "
-		   "false;\">" << endl;
-	out << "</form>" << endl;
-
-	for (int j = 0; j < s.inputFiles.size(); j++)
-	{
-		filename = getFilename(s.inputFiles[j]);
-
-		out << "<a class='filelink' href='" << filename;
-		out << ".html'>" << filename << "</a><br>" << endl;
-	}
-
-	out << "</div>" << endl;
-
-	out << "<div id='content'>" << endl;
-	string html = generateHtml(luaFilename.c_str());
-	out << html << "</div></body></html>";
-
-	std::replace(html.begin(), html.end(), '\"', '\'');
-	std::replace(html.begin(), html.end(), '\n', ' ');
-
-	searchOut << "index.add({ id: " << idx << ", title: '";
-	searchOut << title << "', ";
-	searchOut << "body: \"" << html << "\"});" << endl;
-
-	searchOut << "sites.push({title: '" << title << "',";
-	searchOut << "link: '" << title << ".html'});" << endl;
-
-	out.close();
-}
-
 int main(int argc, char* argv[])
 {
 	cout << "MonDoc v" << VERSION_STRING << endl;
 	Settings s = parseCommandLine(argc, argv);
-	string content;
 
 	if (s.showHelp)
 	{
@@ -208,52 +97,36 @@ int main(int argc, char* argv[])
 		return 0;
 	}
 
-	cout << "Copying JS files" << endl;
-	
 #ifndef RESOURCE_DIR
 	string execPath = getPath(argv[0]);
 #else
 	string execPath = RESOURCE_DIR;
 #endif
-	
-	copyFile(execPath + "style.css",
-			 s.outputDirectory + SEPERATOR + "style.css");
-	
-	copyFile(execPath + "syntax-style.css",
-			 s.outputDirectory + SEPERATOR + "syntax-style.css");
-	
-	copyFile(execPath + "searchprovider.js",
-			 s.outputDirectory + SEPERATOR + "searchprovider.js");
-	copyFile(execPath + "lunr.js", s.outputDirectory + SEPERATOR + "lunr.js");
-	copyFile(execPath + "highlight.pack.js", s.outputDirectory + SEPERATOR + "highlight.pack.js");
-	
-	cout << "Processing " << s.inputFiles.size() << " file(s)" << endl;
 
-	ofstream searchOut;
-	searchOut.open((s.outputDirectory + SEPERATOR + "searchindex.js").c_str(),
-				   ios::out);
-	if (!searchOut)
+	cout << "Processing " << s.inputFiles.size() + ((s.indexFile.empty()) ? 0 : 1) << " file(s)" << endl;
+
+	HTMLGenerator generator;
+	vector<LuaSource> sources;
+	LuaSource indexSource;
+	indexSource.parseFile(s.indexFile.c_str());
+
+	for(string str : s.inputFiles)
 	{
-		cout << "Could not write search index!" << endl;
-		cout << (s.outputDirectory + SEPERATOR + "searchindex.js") << endl;
+		LuaSource src;
+
+		cout << "Processing " << str << endl;
+		src.parseFile(str.c_str());
+		sources.push_back(src);
+	}
+
+	try
+	{
+		generator.generatePages(indexSource, sources, s.outputDirectory.c_str(), execPath.c_str());
+	}
+	catch(std::exception* e)
+	{
+		cerr << "Could not generate documentation: " << e->what() << endl;
 		return 1;
-	}
-
-	// Write search index header
-
-	searchOut << "var index = lunr(function () {this.field('title', {boost: "
-				 "10}), this.field('body'), this.ref('id')});" << endl;
-
-	searchOut << "var sites = Array();" << endl;
-
-	if (!s.indexFile.empty())
-	{
-		writeHtml(s.indexFile, s.outputDirectory, 0, s, searchOut, "index");
-	}
-
-	for (int i = 0; i < s.inputFiles.size(); i++)
-	{
-		writeHtml(s.inputFiles[i], s.outputDirectory, i, s, searchOut);
 	}
 
 	return 0;

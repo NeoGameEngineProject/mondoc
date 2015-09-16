@@ -1,4 +1,8 @@
 
+iframe {
+	border: none;
+}
+
 .color-primary-0 { color: #494A56 }
 .color-primary-1 { color: #868792 }
 .color-primary-2 { color: #656673 }
@@ -11,9 +15,9 @@
 .rgba-primary-3 { color: rgba( 42, 42, 51,1) }
 .rgba-primary-4 { color: rgba( 26, 27, 42,1) }
 
-.indented 
-{ 
-	text-indent : 2em; 
+.indented
+{
+	text-indent : 2em;
 	margin: -1em;
 }
 
@@ -25,7 +29,7 @@
 .number { color: red; font-weight: bold; }
 
 pre br {margin-bottom:.2em}
-pre 
+pre
 {
     display: inline-block;
     padding: 1em;
@@ -49,86 +53,153 @@ pre::before
     color: white;
 }
 
-.function
-{
-	background-color: #2A2A33;
-    color: #FFFFF8;
+h1 { font-family : monospace; color: #000000; }
+h2 { font-family : monospace; color: #000000; }
 
-	/*
-	background-color : aliceblue;
-	color: black;*/
-	font-family : Arial;
-	font-size : 1.0em;
+a { font-family: monospace; color: #2A2A33; font-size: 1.25em; text-decoration: none; }
+a:hover { color: #656673; }
 
-	margin:	1em;
-	/*margin-right : 12% ;*/
-	padding: 1em;
-	width: 96% ;
+/* Syntax style */
 
-	-webkit-border-radius : 10px;
-	-moz-border-radius : 10px;
-	border-radius : 10px;
-	/*background-color:#E3A20B;*/
-	-webkit-box-shadow : #656673 10px 10px 10px;
-	-moz-box-shadow : #656673 10px 10px 10px;
-	box-shadow : #656673 10px 10px 10px;
+/*
+Date: 17.V.2011
+Author: pumbur <pumbur@pumbur.net>
+*/
+
+.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 0.5em;
+  /*background: #222;*/
+  font-family: console, monospace;
+  background-color: #343538;
+  -webkit-text-size-adjust: none;
 }
 
-p
-{
-	padding: 0.2em;
-	/*background: aliceblue;*/
+.profile .hljs-header *,
+.ini .hljs-title,
+.nginx .hljs-title {
+  color: #fff;
 }
 
-.sidepanel
-{
-	background-color: #2A2A33;
-  color: #FFFFF8;
-	margin:	1em;
-	padding: 1em;
-	float : left;
-	width: 23% ;
-
-
-	-webkit-border-radius : 10px;
-	-moz-border-radius : 10px;
-	border-radius : 10px;
-	/*background-color:#E3A20B;*/
-	-webkit-box-shadow : #656673 10px 10px 10px;
-	-moz-box-shadow : #656673 10px 10px 10px;
-	box-shadow : #656673 10px 10px 10px;
-
-	/*height: 100%;*/
+.hljs-comment,
+.hljs-javadoc,
+.hljs-preprocessor,
+.hljs-preprocessor .hljs-title,
+.hljs-pragma,
+.hljs-shebang,
+.profile .hljs-summary,
+.diff,
+.hljs-pi,
+.hljs-doctype,
+.hljs-tag,
+.css .hljs-rules,
+.tex .hljs-special {
+  color: #444;
 }
 
-h1 { font-family : monospace; }
-
-h2 { font-family : monospace; }
-
-.filelink
-{
-	font-size : 1.2em;
-	font-family : mono;
+.hljs-string,
+.hljs-symbol,
+.diff .hljs-change,
+.hljs-regexp,
+.xml .hljs-attribute,
+.smalltalk .hljs-char,
+.xml .hljs-value,
+.ini .hljs-value,
+.clojure .hljs-attribute,
+.coffeescript .hljs-attribute {
+  color: #ffcc33;
 }
 
-a { font-weight: normal; color: #868792; text-decoration: none; }
-/*a:visited { color: #a0d; text-decoration: none; }*/
-a:hover { text-decoration: none; color: white; }
-
-#content
-{
-	float: 	left;
-	width: 55%;
+.hljs-number,
+.hljs-addition {
+  color: #00cc66;
 }
 
-body
-{
-	/*background-color: #343538;
-  //color:#e2e2e2;*/
-	font-weight: lighter;
-	/*color: #343538;*/
-	background: #868792;
-	font: 1em/1.25 sans;
-	/*margin-left: 12%;
-	margin-right: 12%;*/
+.hljs-built_in,
+.hljs-literal,
+.hljs-type,
+.hljs-typename,
+.go .hljs-constant,
+.ini .hljs-keyword,
+.lua .hljs-title,
+.perl .hljs-variable,
+.php .hljs-variable,
+.mel .hljs-variable,
+.django .hljs-variable,
+.css .funtion,
+.smalltalk .method,
+.hljs-hexcolor,
+.hljs-important,
+.hljs-flow,
+.hljs-inheritance,
+.parser3 .hljs-variable {
+  color: #32aaee;
+}
+
+.hljs-keyword,
+.hljs-tag .hljs-title,
+.css .hljs-tag,
+.css .hljs-class,
+.css .hljs-id,
+.css .hljs-pseudo,
+.css .hljs-attr_selector,
+.hljs-winutils,
+.tex .hljs-command,
+.hljs-request,
+.hljs-status {
+  color: #6644aa;
+}
+
+.hljs-title,
+.ruby .hljs-constant,
+.vala .hljs-constant,
+.hljs-parent,
+.hljs-deletion,
+.hljs-template_tag,
+.css .hljs-keyword,
+.objectivec .hljs-class .hljs-id,
+.smalltalk .hljs-class,
+.lisp .hljs-keyword,
+.apache .hljs-tag,
+.nginx .hljs-variable,
+.hljs-envvar,
+.bash .hljs-variable,
+.go .hljs-built_in,
+.vbscript .hljs-built_in,
+.lua .hljs-built_in,
+.rsl .hljs-built_in,
+.tail,
+.avrasm .hljs-label,
+.tex .hljs-formula,
+.tex .hljs-formula * {
+  color: #bb1166;
+}
+
+.hljs-yardoctag,
+.hljs-phpdoc,
+.hljs-dartdoc,
+.profile .hljs-header,
+.ini .hljs-title,
+.apache .hljs-tag,
+.parser3 .hljs-title {
+  font-weight: bold;
+}
+
+.coffeescript .javascript,
+.javascript .xml,
+.tex .hljs-formula,
+.xml .javascript,
+.xml .vbscript,
+.xml .css,
+.xml .hljs-cdata {
+  opacity: 0.6;
+}
+
+.hljs,
+.hljs-subst,
+.diff .hljs-chunk,
+.css .hljs-value,
+.css .hljs-attribute {
+  color: #aaa;
 }
