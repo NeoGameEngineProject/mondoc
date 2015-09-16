@@ -265,15 +265,14 @@ void LuaSource::compress(std::function<std::string(Element&)> generateCodeblock)
 			continue;
 		}
 
-		if(e.type == LuaSource::ELEMENT_FUNCTION)
+		if(!handlingFunction && e.type == LuaSource::ELEMENT_FUNCTION)
 		{
 			currentFunction = e;
 			handlingFunction = true;
+			continue;
 		}
-		else
-		{
-			newElements.push_back(e);
-		}
+
+		newElements.push_back(e);
 	}
 
 	m_elements.clear();
