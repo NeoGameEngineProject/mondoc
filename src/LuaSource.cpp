@@ -134,7 +134,7 @@ void LuaSource::parse(stringstream* ss)
 					e.ret = line.substr(7);
 					trimWhitespace(e.ret);
 				}
-				else if(line.find("@code") == 0 || line.find("/code") == 0)
+				else if(line.find("@code") == 0 || line.find("/code") == 0 || line.find("\\code") == 0)
 				{
 					line = line.substr(5);
 					e.type = ELEMENT_COMMENT;
@@ -189,7 +189,7 @@ void LuaSource::parse(stringstream* ss)
 			break;
 
 		case PARSE_CODEBLOCK:
-			if(line.find("--") == 0 && (line.find("@endcode") == -1 && line.find("/endcode") == -1))
+			if(line.find("--") == 0 && (line.find("@endcode") == -1 && line.find("/endcode") == -1 && line.find("\\endcode") == -1))
 			{
 				e.content += line.substr(2) + "\n";
 			}
