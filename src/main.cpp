@@ -71,6 +71,11 @@ void displayHelp()
 	cout << "Usage: mondoc -o <output> <input files>" << endl;
 	cout << "\t-i: The file used to produce the index.html" << endl;
 	cout << "\t-o: Selects the output directory" << endl;
+
+#ifdef RESOURCE_DIR
+	cout << endl << "Using resource directory: " << RESOURCE_DIR << endl;
+#endif
+
 	cout << endl;
 	cout << "\"Der Mond, das blasse Auge der Nacht.\" - Heinrich Heine" << endl; 
 }
@@ -108,7 +113,6 @@ int main(int argc, char* argv[])
 	HTMLGenerator generator;
 	vector<LuaSource> sources;
 	LuaSource indexSource;
-	indexSource.parseFile(s.indexFile.c_str());
 
 	for(string str : s.inputFiles)
 	{
@@ -121,6 +125,7 @@ int main(int argc, char* argv[])
 
 	try
 	{
+		indexSource.parseFile(s.indexFile.c_str());
 		generator.generatePages(indexSource, sources, s.outputDirectory.c_str(), execPath.c_str());
 	}
 	catch(std::exception* e)

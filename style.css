@@ -3,7 +3,7 @@ iframe {
 	border: none;
 }
 
-.color-primary-0 { color: #494A56 }
+/*.color-primary-0 { color: #494A56 }
 .color-primary-1 { color: #868792 }
 .color-primary-2 { color: #656673 }
 .color-primary-3 { color: #2A2A33 }
@@ -13,7 +13,7 @@ iframe {
 .rgba-primary-1 { color: rgba(134,135,146,1) }
 .rgba-primary-2 { color: rgba(101,102,115,1) }
 .rgba-primary-3 { color: rgba( 42, 42, 51,1) }
-.rgba-primary-4 { color: rgba( 26, 27, 42,1) }
+.rgba-primary-4 { color: rgba( 26, 27, 42,1) }*/
 
 .indented
 {
@@ -27,6 +27,10 @@ iframe {
 .string { color: #00bcff; font-weight: normal; }
 .escape { color: blue; font-weight: normal; }
 .number { color: red; font-weight: bold; }
+
+body {
+	color: #000000;
+}
 
 pre br {margin-bottom:.2em}
 pre
@@ -59,6 +63,65 @@ h2 { font-family : monospace; color: #000000; }
 
 a { font-family: monospace; color: #2A2A33; font-size: 1.25em; text-decoration: none; }
 a:hover { color: #656673; }
+
+/*p {
+ // margin: 1.5em;
+  //border-style: double;
+  padding-top: 0.3em;
+  padding-bottom: 0.3em;
+}*/
+
+div.comment{
+  /*-webkit-box-shadow: 1px 2px 3px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 1px 2px 3px 0px rgba(0,0,0,0.75);
+  box-shadow: 1px 2px 3px 0px rgba(0,0,0,0.75);*/
+
+  margin-top: 0.2em;
+
+  /*border-style: double;*/
+  padding: 0.5em;
+  /*background-color: #EEEEEE;*/
+  border-radius: 0.5em;
+}
+
+div.function{
+  /*-webkit-box-shadow: 1px 2px 3px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 1px 2px 3px 0px rgba(0,0,0,0.75);
+  box-shadow: 1px 2px 3px 0px rgba(0,0,0,0.75);*/
+
+  margin-top: 0.2em;
+
+  /*border-style: double;*/
+  padding: 0.5em;
+  /*background-color: #EEEEEE;*/
+  border-radius: 0.5em;
+}
+
+div.codeblock{
+  /*-webkit-box-shadow: 1px 2px 3px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 1px 2px 3px 0px rgba(0,0,0,0.75);
+  box-shadow: 1px 2px 3px 0px rgba(0,0,0,0.75);*/
+
+  margin-top: 0.2em;
+
+  /*border-style: double;*/
+  padding: 0.5em;
+  /*background-color: #EEEEEE;*/
+  border-radius: 0.5em;
+}
+
+div.variable{
+  /*-webkit-box-shadow: 1px 2px 3px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 1px 2px 3px 0px rgba(0,0,0,0.75);
+  box-shadow: 1px 2px 3px 0px rgba(0,0,0,0.75);*/
+
+  margin-top: 0.2em;
+
+  /*border-style: double;*/
+  padding: 0.5em;
+  /*background-color: #EEEEEE;*/
+  border-radius: 0.5em;
+}
 
 /* Syntax style */
 

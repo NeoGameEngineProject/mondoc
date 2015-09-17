@@ -63,7 +63,7 @@ string HTMLGenerator::generateOutput(LuaSource& src)
 	vector<LuaSource::Element>* elements = src.getElements();
 
 	src.compress(HTMLGenerator::generateCodeblock);
-	setupHtmlHeader(ss, src.getModuleName());
+	//setupHtmlHeader(ss, src.getModuleName());
 
 	for(LuaSource::Element e : (*elements))
 	{
@@ -71,24 +71,24 @@ string HTMLGenerator::generateOutput(LuaSource& src)
 		{
 		case LuaSource::ELEMENT_STANDALONE_COMMENT:
 		case LuaSource::ELEMENT_COMMENT:
-			ss << "<p class='comment'>" << generateComment(e) << "</p>" << endl;
+			ss << "<div class='comment'>" << generateComment(e) << "</div>" << endl;
 		break;
 
 		case LuaSource::ELEMENT_VARIABLE:
-			ss << "<p class='variable'>" << generateVariable(e) << "</p>" << endl;
+			ss << "<div class='variable'>" << generateVariable(e) << "</div>" << endl;
 		break;
 
 		case LuaSource::ELEMENT_CODE:
-			ss << "<p class='codeblock'>" << generateCodeblock(e) << "</p>" << endl;
+			ss << "<div class='codeblock'>" << generateCodeblock(e) << "</div>" << endl;
 		break;
 
 		case LuaSource::ELEMENT_FUNCTION:
-			ss << "<p class='function'>" << generateFunction(e) << "</p>" << endl;
+			ss << "<div class='function'>" << generateFunction(e) << "</div>" << endl;
 		break;
 		}
 	}
 
-	ss << "</body></html>" << endl;
+	//ss << "</body></html>" << endl;
 
 	return ss.str();
 }
@@ -105,16 +105,10 @@ void HTMLGenerator::setupHtmlHeader(stringstream& ss, const char* title, bool in
 	ss << "<script src='highlight.pack.js'></script>" << endl;
 	ss << "<script>hljs.initHighlightingOnLoad();</script>" << endl;
 
-	if(includeJS)
-	{
-		ss << "<script type='text/javascript' src=\"navigation.js\"></script>" << endl;
-		ss << "<body onload='onBodyLoad();'>" << endl;
-	}
-	else
-		ss << "<body>" << endl;
+	ss << "<body>" << endl;
 }
 
-void HTMLGenerator::generatePages(LuaSource& index, std::vector<LuaSource>& sources, const char* outpath, const char* resources)
+/*void HTMLGenerator::generatePages(LuaSource& index, std::vector<LuaSource>& sources, const char* outpath, const char* resources)
 {
 	string basePath = outpath;
 	string page = generateOutput(index);
@@ -156,13 +150,75 @@ void HTMLGenerator::generatePages(LuaSource& index, std::vector<LuaSource>& sour
 	copyFile(resPath + PATH_SEP + "style.css", basePath + PATH_SEP + "style.css");
 	copyFile(resPath + PATH_SEP + "highlight.pack.js", basePath + PATH_SEP + "highlight.pack.js");
 	copyFile(resPath + PATH_SEP + "navigation.js", basePath + PATH_SEP + "navigation.js");
+}*/
+
+std::string HTMLGenerator::generateLink(const string text, const string ref)
+{
+	return "<a href='" + ref + "'>" + text + "</a>";
+}
+
+void HTMLGenerator::generatePages(LuaSource& index, std::vector<LuaSource>& sources, const char* outpath, const char* resources)
+{
+	string basePath = outpath;
+
+	stringstream indexStream;
+	setupHtmlHeader(indexStream, "Index");
+	indexStream << "<div id='content' src='" << index.getModuleName() << ".html' name='content' style=\"float: right; width: 80%;\">";
+	indexStream << generateOutput(index);
+	indexStream << "</div>" << endl;
+
+	//writeFile((basePath + PATH_SEP + index.getModuleName() + ".html").c_str(), page.c_str());
+
+	stringstream sidepanel;
+	vector<string> pages;
+	string page;
+	string modname;
+
+	page.resize(512);
+
+	sidepanel << "<div id='sidepanel' style=\"position: fixed; float: left; width: 20%; height: 100%;\">" << endl;
+
+	modname = index.getModuleName();
+	sidepanel << generateLink("Index", "index.html") << "<br>" << endl;
+
+	for(LuaSource src : sources)
+	{
+		stringstream ss;
+		modname = src.getModuleName();
+		sidepanel << generateLink(modname, modname + ".html") << "<br>" << endl;
+
+		setupHtmlHeader(ss, src.getModuleName());
+		ss << "<div id='content' src='" << index.getModuleName() << ".html' name='content' style=\"float: right; width: 80%; height: 100%;\">";
+		ss << generateOutput(src);
+		ss << "</div>" << endl;
+
+		pages.push_back(ss.str());
+	}
+	sidepanel << "</div>" << endl;
+
+	for(int i = 0; i < pages.size(); i++)
+	{
+		string* str = &pages[i];
+		str->append(sidepanel.str());
+		str->append("</body></html>");
+		//cout << *str << endl << "**********************************************************" << endl;
+		writeFile((basePath + PATH_SEP + sources[i].getModuleName() + ".html").c_str(), str->c_str());
+	}
+
+	indexStream << sidepanel.rdbuf() << endl << "</body></html>" << endl;
+	writeFile((basePath + PATH_SEP + "index.html").c_str(), indexStream.str().c_str());
+
+	// Copy some resources
+	string resPath = resources;
+	copyFile(resPath + PATH_SEP + "style.css", basePath + PATH_SEP + "style.css");
+	copyFile(resPath + PATH_SEP + "highlight.pack.js", basePath + PATH_SEP + "highlight.pack.js");
+	copyFile(resPath + PATH_SEP + "navigation.js", basePath + PATH_SEP + "navigation.js");
 }
 
 void HTMLGenerator::writeFile(const char* path, const char* data)
 {
 	ofstream out(path);
 	if(!out) throw FileNotFoundException(path);
-
 	out << data;
 	out.close();
 }
@@ -171,7 +227,12 @@ string HTMLGenerator::generateComment(LuaSource::Element& e)
 {
 	stringstream ss;
 	replaceString(e.content, "\n", "<br>");
-	ss << "<h1>" << e.title << "</h1>" << endl << "<p>" << e.content << "</p>" << endl << endl;
+
+	if(!e.title.empty())
+		ss << "<h1>" << e.title << "</h1>" << endl;
+
+	if(!e.content.empty())
+		ss << "<p>" << e.content << "</p>" << endl << endl;
 	return ss.str();
 }
 
@@ -181,10 +242,13 @@ string HTMLGenerator::generateFunction(LuaSource::Element& e)
 	replaceString(e.content, "\n", "<br>");
 	ss << "<h2>" << e.title << "</h2>" << endl << "<p>" << e.content << endl;
 
-	ss << "<p class='arguments'>" << endl;
-	for(LuaSource::Parameter p : e.parameters)
-		ss << "<strong>" << p.name << ":</strong> " << p.description << "<br>" << endl;
-	ss << "</p>" << endl;
+	if(e.parameters.size())
+	{
+		ss << "<p class='arguments'>" << endl;
+		for(LuaSource::Parameter p : e.parameters)
+			ss << "<strong>" << p.name << ":</strong> " << p.description << "<br>" << endl;
+		ss << "</p>" << endl;
+	}
 
 	if(!e.ret.empty())
 		ss << "<br><strong>Returns: </strong>" << e.ret << endl;
