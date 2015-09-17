@@ -39,7 +39,8 @@ pre
     overflow: auto;
 
     font-family: console, monospace;
-    background-color: #343538;
+    /*background-color: #343538;*/
+    background-color: #222;
     color:#e2e2e2;
     white-space: normal;
 }
@@ -70,9 +71,9 @@ Author: pumbur <pumbur@pumbur.net>
   display: block;
   overflow-x: auto;
   padding: 0.5em;
-  /*background: #222;*/
+  background: #222;
   font-family: console, monospace;
-  background-color: #343538;
+  /*background-color: #343538;*/
   -webkit-text-size-adjust: none;
 }
 
@@ -95,7 +96,7 @@ Author: pumbur <pumbur@pumbur.net>
 .hljs-tag,
 .css .hljs-rules,
 .tex .hljs-special {
-  color: #444;
+  color: #888;
 }
 
 .hljs-string,

@@ -102,16 +102,16 @@ void HTMLGenerator::setupHtmlHeader(stringstream& ss, const char* title, bool in
 	ss << "<link rel='stylesheet' type='text/css' href='style.css'/>" << endl;
 	ss << "</head>" << endl;
 
-	if(includeJS)
-	{
-		ss << "<script type='text/javascript' src=\"navigation.js\"></script>" << endl;
-	}
-
-	// Switch?
 	ss << "<script src='highlight.pack.js'></script>" << endl;
 	ss << "<script>hljs.initHighlightingOnLoad();</script>" << endl;
 
-	ss << "<body>" << endl;
+	if(includeJS)
+	{
+		ss << "<script type='text/javascript' src=\"navigation.js\"></script>" << endl;
+		ss << "<body onload='onBodyLoad();'>" << endl;
+	}
+	else
+		ss << "<body>" << endl;
 }
 
 void HTMLGenerator::generatePages(LuaSource& index, std::vector<LuaSource>& sources, const char* outpath, const char* resources)
@@ -123,17 +123,19 @@ void HTMLGenerator::generatePages(LuaSource& index, std::vector<LuaSource>& sour
 	stringstream sidepanel;
 	string path;
 
-	setupHtmlHeader(sidepanel, "");
-	sidepanel << "<a href='" << index.getModuleName() << ".html' target='content'> Index </a>" << endl;
+	//setupHtmlHeader(sidepanel, "");
+	//sidepanel << "<a onclick=\"loadPage('content', '" << index.getModuleName() << ".html');\"" << " href='" << index.getModuleName() << ".html' <<  target='content'> Index </a>" << endl;
+	sidepanel << "<br><a onclick=\"loadPage('content', '" << index.getModuleName() << ".html');\"" << " href='#'>Index</a>" << endl;
 
 	for(LuaSource s : sources)
 	{
 		path = basePath + PATH_SEP + s.getModuleName() + ".html";
-		sidepanel << "<br><a href='" << s.getModuleName() << ".html' target='content'>" << s.getModuleName() << "</a>" << endl;
+		//sidepanel << "<br><a onclick=\"loadPage('content', '" << s.getModuleName() << ".html');\"" << " href='" << s.getModuleName() << ".html' target='content'>" << s.getModuleName() << "</a>" << endl;
+		sidepanel << "<br><a onclick=\"loadPage('content', '" << s.getModuleName() << ".html');\"" << " href='#'>" << s.getModuleName() << "</a>" << endl;
 		writeFile(path.c_str(), generateOutput(s).c_str());
 	}
 
-	sidepanel << "</body></html>" << endl;
+	//sidepanel << "</body></html>" << endl;
 
 	// Finalize sidepanel
 	writeFile((basePath + PATH_SEP + "sidepanel.html").c_str(), sidepanel.str().c_str());
@@ -142,8 +144,9 @@ void HTMLGenerator::generatePages(LuaSource& index, std::vector<LuaSource>& sour
 	stringstream ss;
 	setupHtmlHeader(ss, "Reference", true);
 
-	ss << "<iframe src='sidepanel.html' align='left' name='sidepanel' style=\"position: fixed; float: left; width: 20%; height: 100%;\"></iframe>" << endl;
-	ss << "<iframe id='contentIframe' onload='setIframeHeight(this.id)' src='" << index.getModuleName() << ".html' height='100%' align='middle' name='content' style=\"float: right; width: 78%; height: 100%;\"></iframe>" << endl;
+	ss << "<div id='sidepanel' style=\"position: fixed; float: left; width: 20%; height: 100%;\">" << sidepanel.str() << "</div>" << endl;
+	//ss << "<iframe id='contentIframe' onload='setIframeHeight(this.id)' src='" << index.getModuleName() << ".html' height='100%' align='middle' name='content' style=\"float: right; width: 78%; height: 100%;\"></iframe>" << endl;
+	ss << "<div id='content' src='" << index.getModuleName() << ".html' name='content' style=\"margin-left: 20%; position: fixed; float: right; width: 80%; height: 100%;\"></div>" << endl;
 
 	ss << "</body></html>" << endl;
 	writeFile((basePath + PATH_SEP + "index.html").c_str(), ss.str().c_str());
