@@ -177,7 +177,7 @@ void LuaSource::parse(stringstream* ss)
 					e.clear();
 				}
 				else
-				{					
+				{
 					e.type = ELEMENT_STANDALONE_COMMENT;
 					m_elements.push_back(e);
 					state = PARSE_OTHER;

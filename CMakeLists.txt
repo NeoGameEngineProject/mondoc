@@ -1,7 +1,7 @@
 PROJECT(MONDOC)
 
 ## Let's use a reasonable modern version
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 SET(CMAKE_HAS_SORT 1)
 SET(CMAKE_MODULE_PATH
   ${MONDOC_SOURCE_DIR}/CMake
@@ -13,8 +13,6 @@ INCLUDE("CopyFiles")
 ## Find source and headers
 FILE(GLOB_RECURSE HEADERS src/*.h)
 FILE(GLOB_RECURSE SOURCES src/*.c*)
-
-SET(NEO_INSTALL_DIR bin)
 
 IF(CMAKE_HAS_SORT)
   LIST(SORT HEADERS)
@@ -60,8 +58,8 @@ IF(BUILD_PACKAGE)
 ENDIF()
 
 if(ENABLE_ADDRESS_SANITIZER)
-add_definitions(-fsanitize=address)
-SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
+	add_definitions(-fsanitize=address)
+	SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
 endif()
 
 list(REMOVE_ITEM SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp)

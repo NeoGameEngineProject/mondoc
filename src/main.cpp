@@ -4,11 +4,13 @@
 #include <cstring>
 #include <fstream>
 #include <algorithm>
+#include <memory>
 
+#include "MarkdownGenerator.h"
 #include "HTMLGenerator.h"
 #include "LuaSource.h"
 
-#define VERSION_STRING "0.3"
+#define VERSION_STRING "0.4"
 
 #ifndef WIN32
 #define SEPERATOR "/"
@@ -21,8 +23,9 @@ using namespace std;
 struct Settings
 {
 	vector<string> inputFiles;
-	string indexFile;
+	string indexFile = "";
 	string outputDirectory;
+	string generator = "markdown";
 	bool showHelp;
 };
 
@@ -39,6 +42,7 @@ Settings parseCommandLine(int argc, char* argv[])
 		return s;
 	}
 
+	// FIXME Check if argument is available if additional entry is required!
 	for (int i = 1; i < argc; i++)
 	{
 		if (!strcmp(argv[i], "-o"))
@@ -48,6 +52,10 @@ Settings parseCommandLine(int argc, char* argv[])
 		else if (!strcmp("-i", argv[i]))
 		{
 			s.indexFile = argv[++i];
+		}
+		else if (!strcmp("-g", argv[i]))
+		{
+			s.generator = argv[++i];
 		}
 		else if (!strcmp(argv[i], "-h"))
 		{
@@ -71,6 +79,7 @@ void displayHelp()
 	cout << "Usage: mondoc -o <output> <input files>" << endl;
 	cout << "\t-i: The file used to produce the index.html" << endl;
 	cout << "\t-o: Selects the output directory" << endl;
+	cout << "\t-g: Selects the generator to use (html, markdown)" << endl;
 
 #ifdef RESOURCE_DIR
 	cout << endl << "Using resource directory: " << RESOURCE_DIR << endl;
@@ -110,7 +119,11 @@ int main(int argc, char* argv[])
 
 	cout << "Processing " << s.inputFiles.size() + ((s.indexFile.empty()) ? 0 : 1) << " file(s)" << endl;
 
-	HTMLGenerator generator;
+	// Choose generator
+	std::unique_ptr<OutputGenerator> generator;
+	if(s.generator == "html") generator = std::unique_ptr<OutputGenerator>(new HTMLGenerator);
+	else if(s.generator == "markdown") generator = std::unique_ptr<OutputGenerator>(new MarkdownGenerator);
+	
 	vector<LuaSource> sources;
 	LuaSource indexSource;
 
@@ -125,8 +138,10 @@ int main(int argc, char* argv[])
 
 	try
 	{
-		indexSource.parseFile(s.indexFile.c_str());
-		generator.generatePages(indexSource, sources, s.outputDirectory.c_str(), execPath.c_str());
+		if(!s.indexFile.empty())
+			indexSource.parseFile(s.indexFile.c_str());
+		
+		generator->generatePages(indexSource, sources, s.outputDirectory.c_str(), execPath.c_str());
 	}
 	catch(std::exception* e)
 	{
