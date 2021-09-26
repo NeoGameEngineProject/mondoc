@@ -87,6 +87,14 @@ void LuaSource::parse(stringstream* ss)
 				trimWhitespace(e.title);
 				state = PARSE_COMMENT;
 			}
+			else if(line.find("function") == 0) // Functions without title are still included!
+			{
+				e.type = ELEMENT_FUNCTION;
+				e.title = line;
+				trimWhitespace(e.title);
+				m_elements.push_back(e);
+				state = PARSE_OTHER;
+			}
 
 			break;
 
@@ -148,6 +156,17 @@ void LuaSource::parse(stringstream* ss)
 				{
 					m_moduleName = line.substr(7);
 					trimWhitespace(m_moduleName);
+				}
+				else if(line.find("@class") == 0)
+				{
+					e.content = e.title + "\n" + e.content;
+					e.title = "class " + line.substr(6);
+					e.type = ELEMENT_FUNCTION;
+					trimWhitespace(e.title);
+
+					m_elements.push_back(e);
+					state = PARSE_OTHER;
+					e.clear();
 				}
 				else
 				{
