@@ -18,13 +18,14 @@ std::string generateHtml(const char* file);
 class FileNotFoundException: public std::exception
 {
 	// FIXME Can we rely on an allocator?
-	std::string filename;
 	std::string message;
 
 public:
-	FileNotFoundException(const char* fname) : filename(fname)
+	FileNotFoundException(const char* fname)
 	{
-		message = "Could not open file '" + filename + "'";
+		message = "Could not open file '";
+		message += fname;
+		message += "'";
 	}
 
 	virtual const char* what() const throw()
