@@ -7,6 +7,7 @@
 #include <memory>
 
 #include "MarkdownGenerator.h"
+#include "SphinxGenerator.h"
 #include "HTMLGenerator.h"
 #include "LuaSource.h"
 
@@ -123,7 +124,8 @@ int main(int argc, char* argv[])
 	std::unique_ptr<OutputGenerator> generator;
 	if(s.generator == "html") generator = std::unique_ptr<OutputGenerator>(new HTMLGenerator);
 	else if(s.generator == "markdown") generator = std::unique_ptr<OutputGenerator>(new MarkdownGenerator);
-	
+	else if(s.generator == "sphinx") generator = std::unique_ptr<OutputGenerator>(new SphinxGenerator);
+
 	vector<LuaSource> sources;
 	LuaSource indexSource;
 
